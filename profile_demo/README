@@ -1,0 +1,5 @@
+After running the profile:profile()
+under erlang shell, run
+1. fprof:profile()
+2. fprof:analyse()
+
