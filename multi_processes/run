@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cd plists-1.0
+mkdir ebin
+./make.sh
+cd ..
+erl -compile plists_demo 
+erl -pz ./plists-1.0/ebin/ -noshell -s plists_demo demo -s init stop
+
