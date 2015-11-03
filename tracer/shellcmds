@@ -1,0 +1,16 @@
+
+
+%%% on shell
+c(prog),f(),Pid = spawn(prog,main,[]), dbg:tracer(),dbg:p(Pid, [c,m]),dbg:tpl('_','_',[]).
+Pid!{self(),hello}.
+flush().
+
+%%% on file
+c(prog),f(),Pid = spawn(prog,main,[]), dbg:tracer(port, dbg:trace_port(file, "tracefile.bin")),dbg:p(Pid, [c,m]),dbg:tpl('_','_',[]).
+Pid!{self(),hello}, Pid!stop, dbg:stop().
+flush().
+
+%%% read file
+dbg:trace_client(file, "tracefile.bin").
+
+
