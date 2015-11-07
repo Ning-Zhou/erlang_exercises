@@ -1,8 +1,11 @@
 -module(frequency).
 -behaviour(gen_server).
--export([init/1, start/0, stop/0, allocate/0, deallocate/1, handle_call/3, handle_cast/2, terminate/2, handle_info/2]).
+-export([init/1, start/0, stop/0, allocate/0, deallocate/1, handle_call/3, handle_cast/2, terminate/2, handle_info/2, test_trap_exit/0]).
 
 -include("frequency.hrl").
+
+test_trap_exit()->
+    spawn(fun()-> frequency!{'EXIT', self(), hello} end).
 
 start()->
     gen_server:start_link({local, frequency}, frequency, [],[]).
@@ -65,6 +68,8 @@ terminate(Reason, _Frequencies)->
 
 
 %% below test shows that handle_info can not handle 'EXIT' signals
+%% But actually, the shell process is supervisor, 
+%% so, we should use test_trap_exit() to run the test
 
 %% 65> frequency:start().
 %% {ok,<0.188.0>}
@@ -81,3 +86,14 @@ terminate(Reason, _Frequencies)->
 %% ** Reason for termination == 
 %% ** hello
 %% ** exception exit: hello
+
+
+%% 5> c(frequency).
+%% frequency.erl:2: Warning: undefined callback function code_change/3 (behaviour 'gen_server')
+%% {ok,frequency}
+%% 6> frequency:start().              
+%% {error,{already_started,<0.42.0>}}
+%% 7> frequency:test_trap_exit(). 
+%% Received message {'EXIT',<0.61.0>,hello}
+%% <0.61.0>
+
